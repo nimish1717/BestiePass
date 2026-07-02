@@ -73,8 +73,7 @@ export default function InvitePage() {
       const allowedStart = event.allowed_start_time || "00:00";
       const allowedEnd = event.allowed_end_time || "23:59";
       if (selectedTime < allowedStart || selectedTime > allowedEnd) {
-        alert(`Please select a time between ${allowedStart} and ${allowedEnd}`);
-        return;
+        return; // Prevent submission if disabled button was bypassed
       }
     }
 
@@ -121,6 +120,8 @@ export default function InvitePage() {
   }
 
   if (!event) return <div>Event not found</div>;
+
+  const isTimeInvalid = event.type === 'flexible' && (selectedTime < (event.allowed_start_time || "00:00") || selectedTime > (event.allowed_end_time || "23:59"));
 
   return (
     <main className="relative min-h-screen flex flex-col items-center py-12 px-4 overflow-x-hidden">
@@ -200,8 +201,16 @@ export default function InvitePage() {
                           onChange={(e) => setSelectedTime(e.target.value)}
                           min={event.allowed_start_time || "00:00"}
                           max={event.allowed_end_time || "23:59"}
-                          className="w-full bg-muted border border-border rounded-xl p-3 outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                          className={`w-full bg-muted border rounded-xl p-3 outline-none focus:ring-2 transition-all ${isTimeInvalid ? 'border-destructive focus:ring-destructive/50 text-destructive' : 'border-border focus:ring-primary/50'}`}
                         />
+                        <div className="flex justify-between items-center mt-1.5 px-1">
+                          <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                            Allowed: {event.allowed_start_time || "00:00"} - {event.allowed_end_time || "23:59"}
+                          </p>
+                          {isTimeInvalid && (
+                            <p className="text-[10px] text-destructive font-bold animate-pulse">Outside allowed time!</p>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -210,12 +219,12 @@ export default function InvitePage() {
             </div>
 
             <div className="flex flex-col gap-3 mt-auto">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.div whileHover={(!isTimeInvalid && (event.type !== 'flexible' || selectedDate)) ? { scale: 1.02 } : {}} whileTap={(!isTimeInvalid && (event.type !== 'flexible' || selectedDate)) ? { scale: 0.98 } : {}}>
                 <Button 
                   size="lg" 
                   onClick={handleConfirm}
-                  disabled={event.type === 'flexible' && !selectedDate}
-                  className="w-full rounded-full bg-primary hover:bg-primary/90 text-white font-bold text-lg shadow-lg"
+                  disabled={(event.type === 'flexible' && !selectedDate) || isTimeInvalid}
+                  className="w-full rounded-full bg-primary hover:bg-primary/90 text-white font-bold text-lg shadow-lg disabled:opacity-50"
                 >
                   I'm Coming! 🎉
                 </Button>

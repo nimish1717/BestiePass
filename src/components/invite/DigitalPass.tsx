@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Download, Image as ImageIcon, X } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+import { Download, Image as ImageIcon, X, Loader2 } from "lucide-react";
+import { QRCodeCanvas } from "qrcode.react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import type { Event, RSVP } from "@/lib/events";
@@ -17,28 +17,43 @@ interface DigitalPassProps {
 
 export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
   const passRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const downloadImage = async () => {
     if (!passRef.current) return;
-    const canvas = await html2canvas(passRef.current, { scale: 2, backgroundColor: null });
-    const image = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.href = image;
-    link.download = `${event.title.replace(/\s+/g, '-').toLowerCase()}-pass.png`;
-    link.click();
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(passRef.current, { scale: 2, useCORS: true, backgroundColor: null });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `${event.title.replace(/\s+/g, '-').toLowerCase()}-pass.png`;
+      link.click();
+    } catch (err) {
+      console.error("Failed to download image", err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const downloadPDF = async () => {
     if (!passRef.current) return;
-    const canvas = await html2canvas(passRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [canvas.width, canvas.height]
-    });
-    pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-    pdf.save(`${event.title.replace(/\s+/g, '-').toLowerCase()}-pass.pdf`);
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(passRef.current, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "px",
+        format: [canvas.width, canvas.height]
+      });
+      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      pdf.save(`${event.title.replace(/\s+/g, '-').toLowerCase()}-pass.pdf`);
+    } catch (err) {
+      console.error("Failed to download pdf", err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -95,7 +110,7 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
             </div>
 
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-border/50 relative z-10">
-              <QRCodeSVG 
+              <QRCodeCanvas 
                 value={`https://hangout-invite.vercel.app/invite/${event.id}/pass`} 
                 size={110} 
                 level="H" 
@@ -109,11 +124,11 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
       </motion.div>
 
       <div className="flex gap-4 w-full max-w-sm">
-        <Button onClick={downloadImage} className="flex-1 rounded-full shadow-lg" variant="secondary">
-          <ImageIcon className="mr-2 h-4 w-4" /> Image
+        <Button onClick={downloadImage} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" variant="secondary">
+          {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />} Image
         </Button>
-        <Button onClick={downloadPDF} className="flex-1 rounded-full shadow-lg" variant="default">
-          <Download className="mr-2 h-4 w-4" /> PDF
+        <Button onClick={downloadPDF} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" variant="default">
+          {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />} PDF
         </Button>
       </div>
     </motion.div>
