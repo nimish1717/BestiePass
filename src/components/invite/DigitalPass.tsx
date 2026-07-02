@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Download, Image as ImageIcon, X, Loader2, MapPin, Calendar, Clock, Coffee } from "lucide-react";
+import { Download, Image as ImageIcon, X, Loader2, MapPin, Calendar, Clock, Ticket } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -75,146 +75,117 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
         initial={{ y: 50, scale: 0.9 }}
         animate={{ y: 0, scale: 1 }}
         transition={{ type: "spring", bounce: 0.5 }}
-        className="w-full max-w-[360px]"
+        className="w-full max-w-[360px] flex flex-col items-center"
       >
-        {/* Pass Card to be captured */}
         <div 
           ref={passRef}
-          style={{ 
-            backgroundColor: "#ff9dbb", 
-            padding: '12px', 
-            borderRadius: '24px',
+          style={{
+            position: 'relative',
+            width: '320px',
+            borderRadius: '30px',
+            background: 'linear-gradient(to bottom, #fdf2f8, #fce7f3)',
+            border: '10px solid #f9a8d4',
+            overflow: 'hidden',
             fontFamily: "'Quicksand', system-ui, -apple-system, sans-serif"
           }}
-          className="shadow-2xl mb-6 relative overflow-hidden"
+          className="shadow-2xl mb-6 bg-white"
         >
-          <div 
-            style={{ 
-              backgroundColor: '#ffe5ec', 
-              borderRadius: '16px', 
-              padding: '24px',
-              border: '2px dashed #ff9dbb',
-              position: 'relative'
-            }} 
-            className="flex flex-col items-center"
-          >
-            {/* Header */}
-            <div style={{ color: '#d8587d', fontWeight: 800, fontSize: '0.8rem', letterSpacing: '0.1em', marginBottom: '12px' }}>
-              ⭐ ENTRY PASS ⭐
-            </div>
+          {/* Decorative Corners */}
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '40px', height: '40px', backgroundColor: '#f9a8d4', borderBottomRightRadius: '9999px' }}></div>
+          <div style={{ position: 'absolute', top: 0, right: 0, width: '40px', height: '40px', backgroundColor: '#f9a8d4', borderBottomLeftRadius: '9999px' }}></div>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '40px', height: '40px', backgroundColor: '#f9a8d4', borderTopRightRadius: '9999px' }}></div>
+          <div style={{ position: 'absolute', bottom: 0, right: 0, width: '40px', height: '40px', backgroundColor: '#f9a8d4', borderTopLeftRadius: '9999px' }}></div>
 
-            {/* Title */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <h2 style={{ color: '#d8587d', fontSize: '1.8rem', fontWeight: 900, lineHeight: 1.1, textAlign: 'center' }}>
-                PLAN<br/>Unlocked
-              </h2>
-              <span style={{ fontSize: '1.8rem' }}>🔓</span>
-            </div>
+          <div style={{ padding: '24px', position: 'relative', zIndex: 10 }}>
             
-            <p style={{ color: '#d8587d', fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.05em', marginBottom: '24px' }}>
-              MEMORIES AWAIT!
-            </p>
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+              <h3 style={{ color: '#be185d', fontWeight: 600, fontSize: '1.125rem' }}>
+                ✨ ENTRY PASS ✨
+              </h3>
+              <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ec4899', marginTop: '8px', lineHeight: 1 }}>
+                PLAN
+              </h1>
+              <h2 style={{ fontSize: '1.875rem', color: '#7e22ce', fontFamily: 'cursive', marginTop: '-4px' }}>
+                Unlocked
+              </h2>
+              <p style={{ color: '#6b7280', fontSize: '0.875rem', marginTop: '4px', fontWeight: 600 }}>
+                MEMORIES AWAIT!
+              </p>
+            </div>
 
             {/* Panda Centerpiece */}
-            <div 
-              style={{
-                width: '140px',
-                height: '140px',
-                backgroundColor: '#ffb3c6',
-                borderRadius: '50%',
-                border: '6px solid #ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 16px rgba(216, 88, 125, 0.2)',
-                marginBottom: '28px',
-                position: 'relative'
-              }}
-            >
-              {/* Cute sparkles around panda */}
-              <span style={{ position: 'absolute', top: '10px', left: '10px', fontSize: '1.2rem' }}>✨</span>
-              <span style={{ position: 'absolute', bottom: '15px', right: '15px', fontSize: '1rem' }}>💖</span>
-              <span style={{ fontSize: '5rem', lineHeight: 1, filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.1))' }}>
-                🐼
-              </span>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <div style={{ width: '128px', height: '128px', borderRadius: '9999px', backgroundColor: '#fbcfe8', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                <span style={{ fontSize: '5rem', filter: 'drop-shadow(0 4px 4px rgba(0,0,0,0.1))' }}>🐼</span>
+              </div>
             </div>
 
-            {/* Details & QR Code Row */}
-            <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+            <div style={{ borderTop: '1px dashed #f9a8d4', marginBottom: '20px' }}></div>
+
+            {/* Details */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '0.875rem' }}>
               
-              {/* Left Column: Details */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                
-                {/* Event */}
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <div style={{ color: '#ff7aa2', marginTop: '2px' }}><Coffee size={14} strokeWidth={3} /></div>
-                  <div>
-                    <p style={{ fontSize: '0.6rem', color: '#ff7aa2', fontWeight: 800, textTransform: 'uppercase', marginBottom: '2px' }}>Event</p>
-                    <p style={{ color: '#d8587d', fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2 }}>{event.title}</p>
-                  </div>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Ticket style={{ color: '#ec4899' }} size={20} />
+                <div>
+                  <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.75rem', letterSpacing: '0.05em' }}>EVENT</p>
+                  <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.title}</p>
                 </div>
-
-                {/* Date */}
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <div style={{ color: '#ff7aa2', marginTop: '2px' }}><Calendar size={14} strokeWidth={3} /></div>
-                  <div>
-                    <p style={{ fontSize: '0.6rem', color: '#ff7aa2', fontWeight: 800, textTransform: 'uppercase', marginBottom: '2px' }}>Date</p>
-                    <p style={{ color: '#d8587d', fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2 }}>
-                      {event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'TBD'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Time */}
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <div style={{ color: '#ff7aa2', marginTop: '2px' }}><Clock size={14} strokeWidth={3} /></div>
-                  <div>
-                    <p style={{ fontSize: '0.6rem', color: '#ff7aa2', fontWeight: 800, textTransform: 'uppercase', marginBottom: '2px' }}>Time</p>
-                    <p style={{ color: '#d8587d', fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2 }}>
-                      {event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'TBD'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Venue */}
-                {event.venue && (
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <div style={{ color: '#ff7aa2', marginTop: '2px' }}><MapPin size={14} strokeWidth={3} /></div>
-                    <div>
-                      <p style={{ fontSize: '0.6rem', color: '#ff7aa2', fontWeight: 800, textTransform: 'uppercase', marginBottom: '2px' }}>Venue</p>
-                      <p style={{ color: '#d8587d', fontWeight: 700, fontSize: '0.85rem', lineHeight: 1.2 }}>{event.venue}</p>
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Right Column: QR Code */}
-              <div style={{ backgroundColor: '#ffffff', padding: '6px', borderRadius: '12px', border: '2px solid #ffb3c6', boxShadow: '0 4px 8px rgba(216, 88, 125, 0.1)' }}>
-                <QRCodeCanvas 
-                  value={`https://hangout-invite.vercel.app/invite/${event.id}/pass`} 
-                  size={80} 
-                  level="M" 
-                  includeMargin={false} 
-                  style={{ borderRadius: '6px' }}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Calendar style={{ color: '#ec4899' }} size={20} />
+                <div>
+                  <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.75rem', letterSpacing: '0.05em' }}>DATE</p>
+                  <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'TBD'}</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Clock style={{ color: '#ec4899' }} size={20} />
+                <div>
+                  <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.75rem', letterSpacing: '0.05em' }}>TIME</p>
+                  <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'TBD'}</p>
+                </div>
+              </div>
+
+              {event.venue && (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <MapPin style={{ color: '#ec4899' }} size={20} />
+                  <div>
+                    <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.75rem', letterSpacing: '0.05em' }}>VENUE</p>
+                    <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.venue}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* QR Code */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
+              <div style={{ backgroundColor: '#ffffff', padding: '12px', borderRadius: '12px', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)' }}>
+                <QRCodeCanvas
+                  value={`https://hangout-invite.vercel.app/invite/${event.id}/pass`}
+                  size={90}
                 />
               </div>
-
             </div>
 
-            <div style={{ width: '100%', height: '2px', backgroundColor: '#ffb3c6', margin: '20px 0', opacity: 0.5 }} />
-
-            <div style={{ color: '#ff7aa2', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.05em' }}>
-              THANK YOU FOR SAYING YES! 💖
+            {/* Footer */}
+            <div style={{ marginTop: '24px', textAlign: 'center' }}>
+              <p style={{ color: '#ec4899', fontWeight: 700, fontSize: '0.875rem' }}>
+                Thank you for saying YES! 💕
+              </p>
             </div>
 
           </div>
         </div>
 
         <div className="flex gap-4 w-full">
-          <Button onClick={downloadImage} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" style={{ backgroundColor: '#ff9dbb', color: 'white' }}>
+          <Button onClick={downloadImage} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" style={{ backgroundColor: '#f9a8d4', color: '#831843' }}>
             {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImageIcon className="mr-2 h-4 w-4" />} Image
           </Button>
-          <Button onClick={downloadPDF} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" style={{ backgroundColor: '#d8587d', color: 'white' }}>
+          <Button onClick={downloadPDF} disabled={isDownloading} className="flex-1 rounded-full shadow-lg" style={{ backgroundColor: '#ec4899', color: 'white' }}>
             {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />} PDF
           </Button>
         </div>
