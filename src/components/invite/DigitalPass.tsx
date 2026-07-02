@@ -79,46 +79,88 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
         {/* Pass Card to be captured */}
         <div 
           ref={passRef}
-          className="bg-gradient-to-br from-primary via-accent to-primary/80 p-1.5 rounded-[3rem] shadow-2xl mb-8 w-full max-w-sm"
+          style={{ 
+            background: "linear-gradient(135deg, #FF6B6B, #FFB88E)", 
+            padding: '6px', 
+            borderRadius: '2rem',
+            fontFamily: "system-ui, -apple-system, sans-serif"
+          }}
+          className="shadow-2xl mb-8 w-full max-w-sm relative"
         >
-          <div className="bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl rounded-[2.8rem] p-8 flex flex-col items-center text-center shadow-inner relative overflow-hidden">
-            {/* Decorative background element */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -mr-10 -mt-10" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -ml-10 -mb-10" />
+          <div 
+            style={{ 
+              backgroundColor: '#ffffff', 
+              borderRadius: '1.7rem', 
+              padding: '2rem',
+              position: 'relative',
+              overflow: 'hidden'
+            }} 
+            className="flex flex-col items-center text-center"
+          >
+            {/* Ticket Cutouts (Perforated effect) */}
+            <div 
+              style={{
+                position: 'absolute',
+                top: '55%',
+                left: '-16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: "linear-gradient(135deg, #FF6B6B, #FF8E53)"
+              }}
+            />
+            <div 
+              style={{
+                position: 'absolute',
+                top: '55%',
+                right: '-16px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: "linear-gradient(135deg, #FF9E6F, #FFB88E)"
+              }}
+            />
 
-            <div className="text-6xl mb-4 relative z-10 drop-shadow-md">{event.cover_emoji || '🎫'}</div>
-            <h2 className="text-2xl font-bold font-heading text-primary mb-2 relative z-10">{event.title}</h2>
+            <div className="text-6xl mb-4 relative z-10" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))' }}>
+              {event.cover_emoji || '🎫'}
+            </div>
             
-            <div className="w-full h-px bg-border my-6 border-dashed border-2 relative z-10 opacity-50" />
+            <h2 style={{ color: '#FF6B6B', fontSize: '1.5rem', fontWeight: 800, lineHeight: 1.2, marginBottom: '0.5rem' }} className="font-heading">
+              {event.title}
+            </h2>
             
-            <div className="w-full text-left space-y-5 mb-8 relative z-10">
-              <div className="bg-muted/30 p-3 rounded-2xl">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Guest</p>
-                <p className="font-semibold text-lg">{rsvp?.guest_name || 'VIP Guest'}</p>
+            <div style={{ width: '100%', height: '0px', borderTop: '2px dashed #e2e8f0', margin: '1.5rem 0' }} />
+            
+            <div className="w-full text-left space-y-4 mb-8">
+              <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                <p style={{ fontSize: '0.65rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: '0.25rem' }}>Guest</p>
+                <p style={{ color: '#0f172a', fontWeight: 700, fontSize: '1.125rem' }}>{rsvp?.guest_name || 'VIP Guest'}</p>
               </div>
-              <div className="bg-muted/30 p-3 rounded-2xl">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">When</p>
-                <p className="font-semibold">{event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'Date Pending'}</p>
-                <p className="text-sm text-foreground/80 font-medium">{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'Time Pending'}</p>
+              <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                <p style={{ fontSize: '0.65rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: '0.25rem' }}>When</p>
+                <p style={{ color: '#0f172a', fontWeight: 700 }}>{event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'Date Pending'}</p>
+                <p style={{ color: '#475569', fontSize: '0.875rem', fontWeight: 500 }}>{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'Time Pending'}</p>
               </div>
               {event.venue && (
-                <div className="bg-muted/30 p-3 rounded-2xl">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Where</p>
-                  <p className="font-semibold leading-tight">{event.venue}</p>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: '0.25rem' }}>Where</p>
+                  <p style={{ color: '#0f172a', fontWeight: 600, lineHeight: 1.2 }}>{event.venue}</p>
                 </div>
               )}
             </div>
 
-            <div className="bg-white p-4 rounded-3xl shadow-sm border border-border/50 relative z-10">
+            <div style={{ padding: '0.5rem', backgroundColor: '#ffffff', borderRadius: '0.75rem', border: '1px solid #e2e8f0' }}>
               <QRCodeCanvas 
                 value={`https://hangout-invite.vercel.app/invite/${event.id}/pass`} 
                 size={110} 
                 level="H" 
                 includeMargin={false} 
-                className="rounded-xl"
+                style={{ borderRadius: '0.5rem' }}
               />
             </div>
-            <p className="text-[10px] font-bold text-muted-foreground mt-5 tracking-[0.2em] uppercase relative z-10">VIP Digital Pass</p>
+            <p style={{ fontSize: '0.65rem', fontWeight: 800, color: '#94a3b8', marginTop: '1.25rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+              VIP Digital Pass
+            </p>
           </div>
         </div>
       </motion.div>
