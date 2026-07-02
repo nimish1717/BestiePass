@@ -64,40 +64,46 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
         {/* Pass Card to be captured */}
         <div 
           ref={passRef}
-          className="bg-gradient-to-br from-primary to-accent p-1 rounded-[3rem] shadow-2xl mb-8 w-full max-w-sm"
+          className="bg-gradient-to-br from-primary via-accent to-primary/80 p-1.5 rounded-[3rem] shadow-2xl mb-8 w-full max-w-sm"
         >
-          <div className="bg-white dark:bg-zinc-900 rounded-[2.8rem] p-8 flex flex-col items-center text-center">
-            <div className="text-6xl mb-4">{event.cover_emoji || '🎫'}</div>
-            <h2 className="text-2xl font-bold font-heading text-primary mb-2">{event.title}</h2>
+          <div className="bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl rounded-[2.8rem] p-8 flex flex-col items-center text-center shadow-inner relative overflow-hidden">
+            {/* Decorative background element */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -mr-10 -mt-10" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl -ml-10 -mb-10" />
+
+            <div className="text-6xl mb-4 relative z-10 drop-shadow-md">{event.cover_emoji || '🎫'}</div>
+            <h2 className="text-2xl font-bold font-heading text-primary mb-2 relative z-10">{event.title}</h2>
             
-            <div className="w-full h-px bg-border my-6 border-dashed border-2" />
+            <div className="w-full h-px bg-border my-6 border-dashed border-2 relative z-10 opacity-50" />
             
-            <div className="w-full text-left space-y-4 mb-8">
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Guest</p>
-                <p className="font-semibold">{rsvp?.guest_name || 'VIP Guest'}</p>
+            <div className="w-full text-left space-y-5 mb-8 relative z-10">
+              <div className="bg-muted/30 p-3 rounded-2xl">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Guest</p>
+                <p className="font-semibold text-lg">{rsvp?.guest_name || 'VIP Guest'}</p>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold">When</p>
-                <p className="font-semibold">{event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'TBD'}</p>
-                <p className="text-sm text-muted-foreground">{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'TBD'}</p>
+              <div className="bg-muted/30 p-3 rounded-2xl">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">When</p>
+                <p className="font-semibold">{event.type === 'fixed' ? event.fixed_date : rsvp?.selected_date || 'Date Pending'}</p>
+                <p className="text-sm text-foreground/80 font-medium">{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'Time Pending'}</p>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold">Where</p>
-                <p className="font-semibold">{event.venue}</p>
-              </div>
+              {event.venue && (
+                <div className="bg-muted/30 p-3 rounded-2xl">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Where</p>
+                  <p className="font-semibold leading-tight">{event.venue}</p>
+                </div>
+              )}
             </div>
 
-            <div className="bg-muted p-4 rounded-3xl">
+            <div className="bg-white p-4 rounded-3xl shadow-sm border border-border/50 relative z-10">
               <QRCodeSVG 
                 value={`https://hangout-invite.vercel.app/invite/${event.id}/pass`} 
-                size={120} 
+                size={110} 
                 level="H" 
                 includeMargin={false} 
                 className="rounded-xl"
               />
             </div>
-            <p className="text-xs text-muted-foreground mt-4 tracking-widest uppercase">Digital Pass</p>
+            <p className="text-[10px] font-bold text-muted-foreground mt-5 tracking-[0.2em] uppercase relative z-10">VIP Digital Pass</p>
           </div>
         </div>
       </motion.div>

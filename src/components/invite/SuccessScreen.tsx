@@ -50,11 +50,17 @@ export function SuccessScreen({ event, guestName, onGetPass }: SuccessScreenProp
         Can't wait to see you! 💕
       </p>
       
-      <div className="bg-white/50 dark:bg-black/20 p-6 rounded-3xl mb-8 text-left">
-        <h3 className="font-bold text-lg mb-2">{event.title}</h3>
-        <p className="text-sm text-muted-foreground mb-1">📍 {event.venue}</p>
-        <p className="text-sm text-muted-foreground">
-          📅 {event.type === 'fixed' ? event.fixed_date : 'Flexible Date'} 
+      <div className="bg-white/50 dark:bg-black/20 p-6 rounded-3xl mb-8 text-left shadow-inner border border-white/20">
+        <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
+          {event.cover_emoji || '💌'} {event.title}
+        </h3>
+        {event.venue && (
+          <p className="text-sm text-foreground/80 mb-2 flex items-center gap-2">
+            <span>📍</span> {event.venue}
+          </p>
+        )}
+        <p className="text-sm text-foreground/80 flex items-center gap-2">
+          <span>📅</span> {event.type === 'fixed' ? event.fixed_date : 'Flexible Date'} 
         </p>
       </div>
 

@@ -14,8 +14,9 @@ import { DigitalPass } from "@/components/invite/DigitalPass";
 import { FloatingBackground } from "@/components/ui/floating-background";
 import { supabase } from "@/lib/supabase";
 
-// Mock Data for now
-import { Event, RSVP } from "@/lib/events";
+import { Event, RSVP, submitRSVP } from "@/lib/events";
+import { format } from "date-fns";
+
 const mockEvent: Event = {
   id: 'example-event-id',
   title: "Coffee & Catchup! ☕️",
@@ -34,6 +35,7 @@ export default function InvitePage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [rsvpState, setRsvpState] = useState<'pending' | 'success'>('pending');
+  const [rsvpData, setRsvpData] = useState<RSVP | null>(null);
   
   const [showDecline, setShowDecline] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -44,10 +46,6 @@ export default function InvitePage() {
   
   const [isDark, setIsDark] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-
-  // Sound effects (would need actual mp3 files in public/sounds)
-  // const [playPop] = useSound('/sounds/pop.mp3', { volume: 0.5, soundEnabled: !isMuted });
-  // const [playChime] = useSound('/sounds/chime.mp3', { volume: 0.5, soundEnabled: !isMuted });
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -68,8 +66,34 @@ export default function InvitePage() {
     document.documentElement.classList.toggle('dark');
   };
 
-  const handleConfirm = () => {
-    // playChime();
+  const handleConfirm = async () => {
+    if (!event) return;
+
+    if (event.type === 'flexible') {
+      const allowedStart = event.allowed_start_time || "00:00";
+      const allowedEnd = event.allowed_end_time || "23:59";
+      if (selectedTime < allowedStart || selectedTime > allowedEnd) {
+        alert(`Please select a time between ${allowedStart} and ${allowedEnd}`);
+        return;
+      }
+    }
+
+    const newRsvp: Partial<RSVP> = {
+      event_id: event.id,
+      guest_name: "Bestie",
+      status: "confirmed",
+      selected_date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : undefined,
+      selected_start_time: selectedTime,
+    };
+
+    const savedRsvp = await submitRSVP(newRsvp);
+    if (savedRsvp) {
+      setRsvpData(savedRsvp);
+    } else {
+      // Fallback for local testing if DB fails
+      setRsvpData({ ...newRsvp, id: 'temp-id', responded_at: new Date().toISOString() } as RSVP);
+    }
+
     setRsvpState('success');
   };
 
@@ -231,7 +255,7 @@ export default function InvitePage() {
       <DeclineFlow isOpen={showDecline} onClose={() => setShowDecline(false)} />
       
       {showPass && (
-        <DigitalPass event={event} onClose={() => setShowPass(false)} />
+        <DigitalPass event={event} rsvp={rsvpData} onClose={() => setShowPass(false)} />
       )}
 
       {/* Surprise Modal */}
