@@ -8,6 +8,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import type { Event, RSVP } from "@/lib/events";
+import { formatTime12Hour } from "@/lib/utils";
 
 interface DigitalPassProps {
   event: Event;
@@ -146,7 +147,7 @@ export function DigitalPass({ event, rsvp, onClose }: DigitalPassProps) {
                 <Clock style={{ color: '#ec4899' }} size={20} />
                 <div>
                   <p style={{ fontWeight: 700, color: '#374151', fontSize: '0.75rem', letterSpacing: '0.05em' }}>TIME</p>
-                  <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.type === 'fixed' ? event.fixed_start_time : rsvp?.selected_start_time || 'TBD'}</p>
+                  <p style={{ color: '#6b7280', fontWeight: 500 }}>{event.type === 'fixed' ? formatTime12Hour(event.fixed_start_time) : formatTime12Hour(rsvp?.selected_start_time || '')}</p>
                 </div>
               </div>
 

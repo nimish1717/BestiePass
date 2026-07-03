@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Sparkles, CalendarDays, MapPin, Clock, Volume2, VolumeX, Moon, Sun } from "lucide-react";
+import { formatTime12Hour } from "@/lib/utils";
 import useSound from "use-sound";
 
 import { DeclineFlow } from "@/components/invite/DeclineFlow";
@@ -171,7 +172,7 @@ export default function InvitePage() {
                   <CalendarDays className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <p className="font-semibold text-sm">Date & Time</p>
-                    <p className="text-sm text-muted-foreground">{event.fixed_date} at {event.fixed_start_time}</p>
+                    <p className="text-sm text-muted-foreground">{event.fixed_date} at {formatTime12Hour(event.fixed_start_time)}</p>
                   </div>
                 </div>
               ) : (
@@ -205,7 +206,7 @@ export default function InvitePage() {
                         />
                         <div className="flex justify-between items-center mt-1.5 px-1">
                           <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                            Allowed: {event.allowed_start_time || "00:00"} - {event.allowed_end_time || "23:59"}
+                            Allowed: {formatTime12Hour(event.allowed_start_time)} - {formatTime12Hour(event.allowed_end_time)}
                           </p>
                           {isTimeInvalid && (
                             <p className="text-[10px] text-destructive font-bold animate-pulse">Outside allowed time!</p>
